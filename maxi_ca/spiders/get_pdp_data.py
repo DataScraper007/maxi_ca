@@ -128,7 +128,7 @@ class GetPDPSpider(scrapy.Spider):
         else:
             text = 'NA'
 
-        clean_text = re.sub(r'\s+', ' ', text.replace('\r', ' ').replace('\n', ' ')).strip()
+        clean_text = re.sub(r'\s+', ' ', text.replace('\r', ' ').replace('\n', ' ').replace('#NAME?','')).strip()
         return clean_text if clean_text else "NA"
 
     def extract_price_data(self, response):
