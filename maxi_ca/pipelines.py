@@ -28,21 +28,17 @@ class MaxiCaPipeline:
                     product_url VARCHAR(255),
                     categories TEXT,
                     product_name VARCHAR(255),
-                    brand_name VARCHAR(255),
                     product_no VARCHAR(50) UNIQUE,
                     price VARCHAR(255),
                     mrp VARCHAR(255),
-                    discount VARCHAR(255),
                     currency VARCHAR(3),
                     serving_for_people VARCHAR(255),
-                    price_per_quantity VARCHAR(50),
-                    availability BOOL,
-                    description TEXT,
-                    valid_date VARCHAR(255),
                     quantity VARCHAR(50),
-                    average_weight VARCHAR(255),
+                    price_per_quantity VARCHAR(50),
+                    description TEXT,
                     ingredients TEXT,
-                    product_image TEXT
+                    product_image TEXT,
+                    valid_date VARCHAR(255)
                 );
                 """
         # Execute the query to create the table

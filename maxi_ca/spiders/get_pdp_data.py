@@ -60,7 +60,7 @@ class GetPDPSpider(scrapy.Spider):
         }
 
         params = {
-            'lang': 'en',
+            'lang': 'fr',
             'date': datetime.today().strftime('%d%m%Y'),
             'pickupType': 'STORE',
             # 'storeId': '8632',
@@ -69,15 +69,15 @@ class GetPDPSpider(scrapy.Spider):
         }
         for result in results:
             _id, url = result
-            # _id = 26991
-            # url = "21639421_EA"
+            # _id = 0
+            # url = "21069384001_EA"
             yield scrapy.Request(
                 url=f"https://api.pcexpress.ca/pcx-bff/api/v1/products/{url}?" + urlencode(params),
                 headers=self.headers,
                 cookies=self.cookies,
-                cb_kwargs={'id': _id, 'url_id': url}
+                cb_kwargs={'id': _id, 'url_id': url},
+                dont_filter=True
             )
-            break
 
     def parse(self, response, **kwargs):
         base_url = "https://www.maxi.ca"
@@ -95,14 +95,14 @@ class GetPDPSpider(scrapy.Spider):
         item['product_url'] = base_url + json_data['link']
         item['product_no'] = json_data['code']
         item['product_name'] = json_data['name'].strip().strip('+')
-        item['brand_name'] = json_data['brand'] if json_data['brand'] else "NA"
+        # item['brand_name'] = json_data['brand'] if json_data['brand'] else "NA"
         item['categories'] = self.extract_categories(json_data)
         item['description'] = self.extract_desc(json_data)
         item['currency'] = "$"
         item['valid_date'] = "NA"
         item['quantity'] = json_data['packageSize'] if json_data['packageSize'] else "NA"
-        item['average_weight'] = json_data['averageWeight'] + ' ' + json_data['uom'] if json_data[
-            'averageWeight'] else "NA"
+        # item['average_weight'] = json_data['averageWeight'] + ' ' + json_data['uom'] if json_data[
+        #     'averageWeight'] else "NA"
         item['ingredients'] = json_data['ingredients'] if json_data['ingredients'] else "NA"
         item['product_image'] = self.extract_images(json_data)
         item['serving_for_people'] = "NA"
@@ -128,7 +128,7 @@ class GetPDPSpider(scrapy.Spider):
         else:
             text = 'NA'
 
-        clean_text = re.sub(r'\s+', ' ', text.replace('\r', ' ').replace('\n', ' ').replace('#NAME?','')).strip()
+        clean_text = re.sub(r'\s+', ' ', text.replace('\r', ' ').replace('\n', ' ').replace('#NAME?', '')).strip()
         return clean_text if clean_text else "NA"
 
     def extract_price_data(self, response):
@@ -137,14 +137,13 @@ class GetPDPSpider(scrapy.Spider):
         for price in price_data:
             item['price'] = price['price']['value']
             item['mrp'] = price.get('wasPrice').get('value', '') if price.get('wasPrice') else "NA"
-            item['discount'] = price.get('badges').get('dealBadge').get('text').replace('SAVE', '').replace('$',
-                                                                                                            '') if item[
-                                                                                                                       'mrp'] != 'NA' else 'NA'
+            # item['discount'] = (price.get('badges').get('dealBadge').get('text').replace('SAVE', '')
+            #                     .replace('$', '')) if item['mrp'] != 'NA' else 'NA'
             ppq_list = []
             for comparison_price in price['comparisonPrices']:
                 ppq_list.append(f"{comparison_price['value']}/{comparison_price['quantity']}{comparison_price['unit']}")
             item['price_per_quantity'] = ' | '.join(ppq_list) if ppq_list else "NA"
-            item['availability'] = True if price['stockStatus'].lower() == 'ok' else False
+            # item['availability'] = True if price['stockStatus'].lower() == 'ok' else False
         return item
 
     def extract_images(self, response):
@@ -158,6 +157,6 @@ class GetPDPSpider(scrapy.Spider):
 
 
 if __name__ == '__main__':
-    execute(f'scrapy crawl {GetPDPSpider.name} -a start_id=3793 -a end_id=0'.split())
+    execute(f'scrapy crawl {GetPDPSpider.name} -a start_id=13000 -a end_id=0'.split())
 
 # https://www.maxi.ca/api/pickup-locations?bannerIds=maxi

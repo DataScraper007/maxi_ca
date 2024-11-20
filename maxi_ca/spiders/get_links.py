@@ -1,19 +1,14 @@
 import json
 import re
-from typing import Iterable
-from urllib.parse import urlencode
+from datetime import datetime
 
 import pymysql
-from scrapy import Selector
 import scrapy
-from scrapy import Request
 from scrapy.cmdline import execute
 
 
 class GetLinksSpider(scrapy.Spider):
     name = "get_links"
-    allowed_domains = ["abc.com"]
-    start_urls = ["https://abc.com"]
 
     def __init__(self):
         super().__init__()
@@ -26,10 +21,14 @@ class GetLinksSpider(scrapy.Spider):
             database='maxi_ca'
         )
         self.cur = self.conn.cursor()
+        # self.start_id = start_id
+        # self.end_id = end_id
 
     def start_requests(self):
         self.cur.execute(
-            f'select id, url from categories_links where status is null or status="pending"')
+            f'select id, url from categories_links where status="pending"'
+            # f'where id between {self.start_id} and {self.end_id}'
+        )
         results = self.cur.fetchall()
         print("result", len(results))
         for result in results:
@@ -71,10 +70,11 @@ class GetLinksSpider(scrapy.Spider):
                         'cartId': '3e5bccce-ddfe-4fe2-96bc-00a3216e35be',
                     },
                     'fulfillmentInfo': {
-                        'storeId': '8632',
+                        # 'storeId': '8632',
+                        'storeId': '7222',
                         'pickupType': 'STORE',
                         'offerType': 'OG',
-                        'date': '29102024',
+                        'date': datetime.today().strftime('%d%m%Y'),
                         'timeSlot': None,
                     },
                     'listingInfo': {
@@ -129,10 +129,11 @@ class GetLinksSpider(scrapy.Spider):
                         'cartId': '3e5bccce-ddfe-4fe2-96bc-00a3216e35be',
                     },
                     'fulfillmentInfo': {
-                        'storeId': '8632',
+                        # 'storeId': '8632',
+                        'storeId': '7222',
                         'pickupType': 'STORE',
                         'offerType': 'OG',
-                        'date': '29102024',
+                        'date': datetime.today().strftime('%d%m%Y'),
                         'timeSlot': None,
                     },
                     'listingInfo': {
@@ -182,10 +183,11 @@ class GetLinksSpider(scrapy.Spider):
                                 'cartId': '3e5bccce-ddfe-4fe2-96bc-00a3216e35be',
                             },
                             'fulfillmentInfo': {
-                                'storeId': '8632',
+                                # 'storeId': '8632',
+                                'storeId': '7222',
                                 'pickupType': 'STORE',
                                 'offerType': 'OG',
-                                'date': '29102024',
+                                'date': datetime.today().strftime('%d%m%Y'),
                                 'timeSlot': None,
                             },
                             'listingInfo': {
@@ -237,10 +239,11 @@ class GetLinksSpider(scrapy.Spider):
                                 'cartId': '3e5bccce-ddfe-4fe2-96bc-00a3216e35be',
                             },
                             'fulfillmentInfo': {
-                                'storeId': '8632',
+                                # 'storeId': '8632',
+                                'storeId': '7222',
                                 'pickupType': 'STORE',
                                 'offerType': 'OG',
-                                'date': '29102024',
+                                'date': datetime.today().strftime('%d%m%Y'),
                                 'timeSlot': None,
                             },
                             'listingInfo': {

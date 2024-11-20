@@ -24,15 +24,15 @@ rename_columns = {
     'categories': 'Category',
     'product_name': 'Product Name',
     'product_no': 'Product Number',
-    'brand_name': 'Brand Name',
-    'availability': 'Availability',
+    # 'brand_name': 'Brand Name',
+    # 'availability': 'Availability',
     'price': 'Price',
     'mrp': 'MRP',
-    'discount': 'Discount',
+    # 'discount': 'Discount',
     'currency': 'Currency',
-    'serving_for_people': 'Serving for People',
+    'serving_for_people': 'Serving For People',
     'quantity': 'Quantity',
-    'average_weight': 'Average Weight',
+    # 'average_weight': 'Average Weight',
     'price_per_quantity': 'Price Per Quantity',
     'description': 'Product Description',
     'ingredients': 'Ingredients',
@@ -46,6 +46,12 @@ try:
 
     # Rename columns
     df.rename(columns=rename_columns, inplace=True)
+
+    # Replace 'NA' with actual NaN values
+    df['MRP'].replace('NA', pd.NA, inplace=True)
+
+    # Fill MRP where it's null with the value from Price
+    df['MRP'] = df['MRP'].fillna(df['Price'])
 
     # Export to Excel
     output_file = fr'C:\Nirmal\files\maxi_ca\maxi_products_{today_date}.xlsx'
