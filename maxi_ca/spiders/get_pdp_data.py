@@ -93,8 +93,8 @@ class GetPDPSpider(scrapy.Spider):
         item = MaxiCaItem()
         item['index_id'] = kwargs['id']
         item['product_url'] = base_url + json_data['link']
-        item['product_no'] = json_data['code']
-        item['product_name'] = json_data['name'].strip().strip('+')
+        item['product_no'] = json_data['code'].strip()
+        item['product_name'] = ' '.join(json_data['name'].split()).strip('+').strip()
         # item['brand_name'] = json_data['brand'] if json_data['brand'] else "NA"
         item['categories'] = self.extract_categories(json_data)
         item['description'] = self.extract_desc(json_data)
@@ -103,7 +103,7 @@ class GetPDPSpider(scrapy.Spider):
         item['quantity'] = json_data['packageSize'] if json_data['packageSize'] else "NA"
         # item['average_weight'] = json_data['averageWeight'] + ' ' + json_data['uom'] if json_data[
         #     'averageWeight'] else "NA"
-        item['ingredients'] = json_data['ingredients'] if json_data['ingredients'] else "NA"
+        item['ingredients'] = ' '.join(json_data['ingredients'].split()) if json_data['ingredients'] else "NA"
         item['product_image'] = self.extract_images(json_data)
         item['serving_for_people'] = "NA"
         item.update(self.extract_price_data(json_data))
@@ -112,9 +112,9 @@ class GetPDPSpider(scrapy.Spider):
     def extract_categories(self, response):
         categories = response['breadcrumbs']
         if categories:
-            l = ['Welcome']
+            l = ['Accueil']
             for category in categories:
-                l.append(category['name'])
+                l.append(category['name'].strip())
             return ' | '.join(l)
         else:
             return "NA"
